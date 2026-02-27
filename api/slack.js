@@ -12,7 +12,19 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
-  const webhookUrl = process.env.SLACK_WEBHOOK_URL;
+  const { channel } = req.body;
+
+let webhookUrl;
+
+if (channel === "notify-cs") {
+  webhookUrl = process.env.SLACK_WEBHOOK_URL;
+} else if (channel === "quitacao") {
+  webhookUrl = process.env.SLACK_WEBHOOK_QUITACAO;
+}
+
+if (!webhookUrl) {
+  return res.status(500).json({ error: "Webhook not configured" });
+}
 
   if (!webhookUrl) {
     return res.status(500).json({ error: "Webhook not configured" });
